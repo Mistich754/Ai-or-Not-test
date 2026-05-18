@@ -1,0 +1,694 @@
+<link rel="icon" href="data:,">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh; /* Занимает 100% высоты экрана */
+  background-color: #020c02; /* Закрашиваем фон браузера в цвет твоего интерфейса */
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--g:#00ff41;--g2:#00c832;--g3:#007a1f;--g4:#003d0f;--bg:#020c02;--bg2:#040f04;--bg3:#060f06;--border:#0f3a0f;--border2:#1a5c1a;--red:#e24b4a;--amber:#ef9f27;}
+.root{background:var(--bg);min-height:100vh;font-family:'Share Tech Mono',monospace;color:var(--g);position:relative;overflow:hidden;}
+.scanline{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.015) 2px,rgba(0,255,65,.015) 4px);pointer-events:none;z-index:0;}
+.music-bar{position:absolute;top:10px;right:10px;z-index:10;display:flex;align-items:center;gap:6px;padding:5px 10px;background:var(--bg2);border:1px solid var(--border2);font-size:9px;}
+.music-lbl{color:var(--g3);letter-spacing:1px;white-space:nowrap;}
+.mbtn{background:transparent;border:1px solid var(--border2);color:var(--g3);font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 7px;cursor:pointer;letter-spacing:1px;transition:all .1s;}
+.mbtn:hover{border-color:var(--g);color:var(--g);}
+input[type=range].vol{width:46px;accent-color:var(--g);height:2px;}
+.eq{display:flex;gap:2px;align-items:flex-end;height:12px;}
+.eq-bar{width:3px;background:var(--g);animation:eq .6s ease-in-out infinite alternate;}
+.eq-bar:nth-child(2){animation-delay:.1s;}.eq-bar:nth-child(3){animation-delay:.2s;}.eq-bar:nth-child(4){animation-delay:.05s;}
+@keyframes eq{from{height:3px;}to{height:12px;}}
+.eq.paused .eq-bar{animation:none;height:3px;}
+.center{position:relative;z-index:1;min-height:600px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 10px;}
+.hdr{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:18px;text-align:center;}
+.hdr-top{display:flex;align-items:center;gap:10px;}
+.hdr-dot{width:8px;height:8px;border-radius:50%;background:var(--g);box-shadow:0 0 6px var(--g);animation:blink 1.2s step-end infinite;}
+@keyframes blink{50%{opacity:0;}}
+.hdr-title{font-size:15px;letter-spacing:3px;text-transform:uppercase;}
+.cursor{display:inline-block;width:8px;height:14px;background:var(--g);animation:blink .8s step-end infinite;vertical-align:-2px;margin-left:2px;}
+.hdr-sub{font-size:10px;color:var(--g3);letter-spacing:1px;max-width:340px;line-height:1.6;}
+.card{background:var(--bg2);border:1px solid var(--border2);padding:14px;width:100%;max-width:400px;}
+.card-label{font-size:9px;letter-spacing:3px;color:var(--g3);text-transform:uppercase;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:5px;}
+.btn{padding:10px;border:1px solid;font-family:'Share Tech Mono',monospace;font-size:12px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all .1s;background:transparent;}
+.btn:hover{filter:brightness(1.3);}
+.btn:active{transform:scale(.97);}
+.btn-g{border-color:var(--g2);color:var(--g2);}
+.btn-g:hover{background:rgba(0,200,50,.08);}
+.btn-r{border-color:var(--red);color:var(--red);}
+.btn-r:hover{background:rgba(226,75,74,.1);}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--g3);font-family:'Share Tech Mono',monospace;font-size:11px;padding:8px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;width:100%;max-width:400px;transition:all .15s;margin-top:5px;}
+.btn-ghost:hover{border-color:var(--g3);color:var(--g);}
+.btn-ghost.danger{border-color:#4a1515;color:var(--red);}
+.btn-ghost.danger:hover{background:rgba(226,75,74,.07);}
+.diff-btns{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px;}
+.two-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;max-width:400px;margin-top:5px;}
+.start-btn{background:transparent;border:1px solid var(--g2);color:var(--g2);font-family:'Share Tech Mono',monospace;font-size:13px;padding:11px;cursor:pointer;letter-spacing:2px;text-transform:uppercase;width:100%;max-width:400px;margin-top:8px;transition:all .15s;}
+.start-btn:hover{background:rgba(0,200,50,.08);filter:brightness(1.2);}
+.start-btn:disabled{border-color:var(--border);color:var(--g4);cursor:not-allowed;}
+.home-bottom{width:100%;max-width:400px;margin-top:10px;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);font-size:9px;color:var(--g3);line-height:1.9;letter-spacing:.5px;}
+.home-bottom .hb-title{font-size:11px;color:var(--g2);letter-spacing:2px;margin-bottom:6px;text-transform:uppercase;}
+
+/* КАТЕГОРИИ — 2 столбца, фиксированная высота */
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;}
+.cat-btn{background:var(--bg3);border:1px solid var(--border);color:var(--g3);font-family:'Share Tech Mono',monospace;font-size:9px;padding:8px 6px;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;text-align:center;transition:all .15s;display:flex;align-items:center;gap:8px;width:100%;}
+.cat-btn:hover{border-color:var(--g3);color:var(--g);}
+.cat-btn.selected{color:var(--g);background:rgba(0,255,65,.06);}
+.cat-icon{font-size:16px;flex-shrink:0;width:22px;text-align:center;}
+.cat-name{flex:1;text-align:left;}
+
+/* count */
+.count-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;}
+.count-btn{background:var(--bg3);border:1px solid var(--border);color:var(--g3);font-family:'Share Tech Mono',monospace;font-size:20px;padding:10px 4px;cursor:pointer;text-align:center;transition:all .15s;}
+.count-btn:hover{border-color:var(--g3);color:var(--g);}
+.count-btn.selected{border-color:var(--g);color:var(--g);background:rgba(0,255,65,.06);}
+.count-sub{font-size:8px;color:var(--g4);letter-spacing:1px;margin-top:2px;}
+
+/* QUIZ IMAGE GRID */
+.images-grid{display:grid;gap:5px;margin-bottom:10px;}
+.images-grid.n1{grid-template-columns:1fr;}
+.images-grid.n2{grid-template-columns:1fr 1fr;}
+.images-grid.n3{grid-template-columns:1fr 1fr 1fr;}
+.images-grid.n4{grid-template-columns:1fr 1fr;}
+
+/* Ячейка картинки — кликабельная */
+.img-cell{position:relative;aspect-ratio:1;background:var(--bg3);overflow:hidden;border:2px solid var(--border);cursor:pointer;transition:border-color .15s,box-shadow .15s;}
+.img-cell:hover{border-color:var(--g3);}
+.img-cell.selected{border-color:var(--g);box-shadow:0 0 10px rgba(0,255,65,.35);}
+.img-cell.selected .img-corner{border-color:var(--g);}
+.img-cell img{width:100%;height:100%;object-fit:cover;filter:brightness(.9) saturate(.6);pointer-events:none;}
+.img-corner{position:absolute;width:9px;height:9px;border-color:var(--border2);border-style:solid;transition:border-color .15s;}
+.img-corner.tl{top:3px;left:3px;border-width:1px 0 0 1px;}
+.img-corner.tr{top:3px;right:3px;border-width:1px 1px 0 0;}
+.img-corner.bl{bottom:3px;left:3px;border-width:0 0 1px 1px;}
+.img-corner.br{bottom:3px;right:3px;border-width:0 1px 1px 0;}
+.img-sel-badge{position:absolute;top:4px;left:4px;background:var(--g);color:#020c02;font-size:8px;padding:1px 5px;letter-spacing:1px;font-family:'Share Tech Mono',monospace;display:none;}
+.img-cell.selected .img-sel-badge{display:block;}
+.img-pholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--g4);text-align:center;padding:4px;line-height:1.4;}
+
+/* hint */
+.select-hint{font-size:9px;color:var(--g4);text-align:center;letter-spacing:1px;margin-bottom:6px;min-height:14px;}
+.select-hint.active{color:var(--amber);}
+
+/* answer buttons — disabled until image selected */
+.ans-btns{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px;}
+.ans-btn{padding:10px;border:1px solid;font-family:'Share Tech Mono',monospace;font-size:12px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all .15s;background:transparent;}
+.ans-btn:disabled{opacity:.3;cursor:not-allowed;}
+.ans-btn.btn-r{border-color:var(--red);color:var(--red);}
+.ans-btn.btn-r:not(:disabled):hover{background:rgba(226,75,74,.1);}
+.ans-btn.btn-g{border-color:var(--g2);color:var(--g2);}
+.ans-btn.btn-g:not(:disabled):hover{background:rgba(0,200,50,.08);}
+.fb-text { animation: blink 0.1s steps(2, start) infinite; }
+@keyframes blink { to { visibility: hidden; } }
+
+.timer-bar-wrap{height:2px;background:var(--bg3);margin-bottom:8px;border:1px solid var(--border);}
+.timer-bar{height:100%;background:var(--g);transition:width 1s linear;box-shadow:0 0 4px var(--g);}
+.timer-bar.danger{background:var(--red);box-shadow:0 0 4px var(--red);}
+.meta{display:flex;justify-content:space-between;font-size:10px;color:var(--g3);margin-bottom:8px;letter-spacing:1px;}
+.feedback{font-size:13px;min-height:18px;margin-bottom:3px;letter-spacing:1px;text-align:center;}
+.feedback.ok{color:var(--g);}
+.feedback.err{color:var(--red);}
+.artifacts{margin-top:6px;background:var(--bg3);border:1px solid var(--border);padding:8px;}
+.art-title{font-size:8px;letter-spacing:2px;color:var(--g3);margin-bottom:5px;text-transform:uppercase;}
+.art-row{display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;font-size:9px;color:var(--g4);line-height:1.5;}
+.art-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.score-big{font-size:44px;color:var(--g);text-align:center;margin:6px 0 2px;text-shadow:0 0 18px var(--g);}
+.rank{font-size:10px;color:var(--g3);text-align:center;margin-bottom:8px;letter-spacing:2px;text-transform:uppercase;}
+.advice-box{background:var(--bg3);border:1px solid var(--border2);padding:10px;margin:4px 0 8px;font-size:9px;color:var(--g3);line-height:1.8;letter-spacing:.5px;}
+.advice-title{font-size:8px;letter-spacing:3px;color:var(--g);margin-bottom:5px;text-transform:uppercase;}
+.review-item{border:1px solid var(--border);margin-bottom:5px;overflow:hidden;}
+.review-hdr{display:flex;align-items:center;gap:6px;padding:5px 8px;}
+.review-hdr.correct{border-left:2px solid var(--g2);}
+.review-hdr.wrong{border-left:2px solid var(--red);}
+.review-img{width:44px;height:33px;object-fit:cover;filter:saturate(.4);flex-shrink:0;}
+.review-info{flex:1;font-size:8px;color:var(--g3);line-height:1.7;}
+.gameover-big{font-size:32px;color:var(--red);text-align:center;margin:8px 0 4px;text-shadow:0 0 14px var(--red);letter-spacing:3px;}
+.tab-row{display:flex;gap:0;margin-bottom:10px;border:1px solid var(--border2);width:100%;max-width:400px;}
+.tab{flex:1;padding:7px;font-size:9px;cursor:pointer;border:none;background:transparent;color:var(--g3);font-family:'Share Tech Mono',monospace;letter-spacing:1px;text-transform:uppercase;transition:all .15s;}
+.tab.active{background:var(--border);color:var(--g);}
+.tab:hover:not(.active){background:var(--bg3);}
+.hist-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);}
+.hist-row:last-child{border-bottom:none;}
+.hist-pct{font-size:15px;min-width:36px;color:var(--g);}
+.badge{font-size:8px;padding:1px 5px;border:1px solid;letter-spacing:1px;text-transform:uppercase;}
+.badge-easy{border-color:var(--g3);color:var(--g2);}
+.badge-med{border-color:#633806;color:var(--amber);}
+.bar-wrap{height:2px;background:var(--border);margin-top:3px;}
+.bar-fill{height:100%;background:var(--g);}
+.empty-hist{font-size:11px;color:var(--g4);text-align:center;padding:20px 0;letter-spacing:1px;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px;width:100%;max-width:400px;}
+.stat-cell{background:var(--bg3);border:1px solid var(--border);padding:7px;text-align:center;}
+.stat-lbl{font-size:8px;color:var(--g3);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
+.stat-val{font-size:16px;color:var(--g);}
+</style>
+
+<div class="root">
+<div class="scanline"></div>
+<div class="music-bar">
+  <div class="eq paused" id="eq"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>
+  <span class="music-lbl" id="mlbl">AUDIO: OFF</span>
+  <input type="range" class="vol" min="0" max="1" step="0.05" value="0.5" id="vol" oninput="setVol(this.value)">
+  <button class="mbtn" id="mbtn" onclick="toggleMusic()">PLAY</button>
+</div>
+<div class="center">
+  <div class="hdr">
+    <div class="hdr-top"><div class="hdr-dot"></div><div class="hdr-title">AI_DETECT v3.0<div class="cursor"></div></div></div>
+    <div class="hdr-sub">Сможешь ли ты отличить — фотография сделана ИИ или реальным человеком?</div>
+  </div>
+  <div id="app" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:5px;"></div>
+</div>
+</div>
+
+<script>
+const CATS={
+  random:   {label:"Рандом",     icon:"◈", color:"var(--g)"},
+  portrait: {label:"Портрет",    icon:"◉", color:"#7faaff"},
+  nature:   {label:"Природа",    icon:"◆", color:"#4ecf7a"},
+  art:      {label:"Искусство",  icon:"◇", color:"#cf8aff"},
+  arch:     {label:"Архитект.",  icon:"▦", color:"#ff9f3a"},
+  animals:  {label:"Животные",   icon:"◎", color:"#ff6b6b"},
+  food:     {label:"Питание",    icon:"◬", color:"#ffe066"},
+  surreal:  {label:"Сюрреализм", icon:"◭", color:"#3adcff"},
+};
+
+// Функция для создания правильного пути и описания картинки
+function mp(cat, type, n, desc) {
+  const extensions = ['jpg', 'png', 'webp', 'jpeg'];
+  // Путь: images/portrait/real/portrait_real (1).jpg
+  const baseName = `images/${cat}/${type}/${cat}_${type} (${n})`;
+  return {
+    image: `${baseName}.${extensions[0]}`, // Сначала пробуем .jpg
+    answer: type,
+    explanation: desc || (type === 'ai' ? 'ИИ-генерация' : 'Реальное фото'),
+    category: cat,
+    altPaths: extensions.map(ext => `${baseName}.${ext}`)
+  };
+}
+
+// ЕДИНАЯ функция генерации пака картинок с описаниями
+function generatePack(cat) {
+  const pack = [];
+  const descriptions = {
+    portrait: { real: "Живые поры, мимические морщины", ai: "Слишком гладкая кожа, артефакты глаз" },
+    nature:   { real: "Природный хаос и честный свет", ai: "Повторяющиеся фракталы в листве" },
+    art:      { real: "Мазки кисти, текстура холста",  ai: "Цифровое сглаживание, псевдо-подпись" },
+    arch:     { real: "Следы времени, честная геометрия", ai: "Окна и колонны плывут в пространстве" },
+    animals:  { real: "Честная структура шерсти и глаз", ai: "Усы и лапы растут из странных мест" },
+    food:     { real: "Естественные блики, пар, соус",  ai: "Пластиковая еда, вросшая в тарелку" },
+    surreal:  { real: "Замысел художника, четкие края", ai: "Бессмысленные ИИ-галлюцинации" }
+  };
+
+  // Создаем по 20 реальных и 20 ИИ картинок для категории
+  for (let i = 1; i <= 20; i++) {
+    pack.push(mp(cat, 'real', i, descriptions[cat].real));
+    pack.push(mp(cat, 'ai', i, descriptions[cat].ai));
+  }
+  return pack;
+}
+
+const POOL = {
+  portrait: generatePack('portrait'),
+  nature:   generatePack('nature'),
+  art:      generatePack('art'),
+  arch:     generatePack('arch'),
+  animals:  generatePack('animals'),
+  food:     generatePack('food'),
+  surreal:  generatePack('surreal')
+}; // <-- Вот здесь заканчивается твой POOL
+
+// ВСТАВЛЯЙ ФУНКЦИЮ СЮДА:
+function getPool() {
+  if (cfgCat === 'random') {
+    return Object.values(POOL).flat();
+  }
+  return POOL[cfgCat] || [];
+}
+
+// Дальше идет твой остальной код (function generatePack, ARTIFACT_DB и т.д.)
+function generatePack(cat, prefix) {
+  const pack = [];
+  const descriptions = {
+    portrait: { real: "Живые поры, мимические морщины", ai: "Слишком гладкая кожа, артефакты глаз" },
+    nature:   { real: "Природный хаос и честный свет", ai: "Повторяющиеся фракталы в листве" },
+    art:      { real: "Мазки кисти, текстура холста",  ai: "Цифровое сглаживание, псевдо-подпись" },
+    arch:     { real: "Следы времени, честная геометрия", ai: "Окна и колонны плывут в пространстве" },
+    animals:  { real: "Честная структура шерсти и глаз", ai: "Усы и лапы растут из странных мест" },
+    food:     { real: "Естественные блики, пар, соус",  ai: "Пластиковая еда, вросшая в тарелку" },
+    surreal:  { real: "Замысел художника, четкие края", ai: "Бессмысленные ИИ-галлюцинации" }
+  };
+
+  for (let i = 1; i <= 40; i++) {
+    const num = i < 10 ? '0' + i : i;
+    const isAi = i % 2 === 0; // Четные - ИИ, Нечетные - Рил
+    pack.push(mp(
+      cat, 
+      prefix + num, 
+      isAi ? 'ai' : 'real', 
+      isAi ? descriptions[cat].ai : descriptions[cat].real
+    ));
+  }
+  return pack;
+}
+const ARTIFACT_DB=[
+  {label:"Глаза",       signs:["Одинаковый блеск в зрачках","Нет сосудов","Симметричные отражения","Зрачки не круглой формы"]},
+  {label:"Кожа",        signs:["Нет пор и изъянов","Идеальный тон","Эффект пластикового лица"]},
+  {label:"Волосы",      signs:["Слипшиеся пряди","Артефакты на краях","Волосы врастают в одежду"]},
+  {label:"Фон",         signs:["Повторяющиеся паттерны","Деформации по краям","Странное размытие"]},
+  {label:"Уши/детали",  signs:["Асимметрия ушей","Лишние элементы","Деформированные серьги"]},
+  {label:"Симметрия",   signs:["Чрезмерная симметрия","Нет природных асимметрий"]},
+  {label:"Руки/пальцы", signs:["Лишние пальцы","Деформированные суставы","Слипшиеся пальцы"]},
+  {label:"Текст/знаки", signs:["Бессмысленные буквы","Деформированные надписи"]},
+  {label:"Освещение",   signs:["Тени в разные стороны","Несоответствие источника света"]},
+  {label:"Окружение",   signs:["Предметы парят в воздухе","Сливание объектов"]}
+];
+
+// Функция для выбора случайных картинок с поддержкой зацикливания
+function pickRandom(pool, n) {
+  if (!pool || pool.length === 0) return [];
+  let arr = [...pool];
+  arr.sort(() => Math.random() - 0.5);
+  
+  if (n > arr.length) {
+    let extra = [];
+    while (extra.length < n) {
+      extra = extra.concat([...arr].sort(() => Math.random() - 0.5));
+    }
+    return extra.slice(0, n);
+  }
+  return arr.slice(0, n);
+}
+// Функция случайного выбора из базы артефактов
+function detectArtifacts(){
+  return[...ARTIFACT_DB].sort(()=>Math.random()-.5).slice(0,2+Math.floor(Math.random()*2))
+    .map(a=>({label:a.label,sign:a.signs[Math.floor(Math.random()*a.signs.length)]}));
+}
+
+// --- Остальная логика игры (Music, startGame, nextQ и т.д.) ---
+// Обязательно оставь функции initAudio, toggleMusic, showMenu и т.д., которые были в твоем файле.
+
+const TIPS={
+  100:["Идеальный результат! Попробуйте Medium — одна ошибка и конец.","Вы безупречно читаете артефакты ИИ."],
+  80: ["Смотрите на симметрию: лицо человека никогда не идеально.","Фон: ИИ размывает края объекта неестественно.","Уши и украшения — ИИ их искажает чаще всего."],
+  60: ["Фокусируйтесь на глазах: у ИИ блеск одинаковый в обоих зрачках.","Кожа у ИИ слишком гладкая — нет пор и пятен.","Волосы: на границе с фоном всегда артефакты."],
+  40: ["Начните с простых признаков: лишние пальцы? Читаемый текст?","ИИ не умеет рисовать руки — ищите деформированные пальцы.","Тени у ИИ часто не совпадают с источником света."],
+  0:  ["ИИ-картинки выглядят 'слишком идеально' — это главный сигнал.","Начните с одной категории и изучите её артефакты.","Просматривайте объяснения после каждого вопроса."],
+};
+function getTips(pct){const k=pct===100?100:pct>=80?80:pct>=60?60:pct>=40?40:0;return[...TIPS[k]].sort(()=>Math.random()-.5).slice(0,3);}
+
+const HKEY="aih_v7";
+function loadH(){try{return JSON.parse(localStorage.getItem(HKEY)||"[]");}catch(e){return[];}}
+function saveH(h){try{localStorage.setItem(HKEY,JSON.stringify(h));}catch(e){}}
+function addResult(e){const h=loadH();h.unshift(e);if(h.length>60)h.length=60;saveH(h);}
+function clearH(){localStorage.removeItem(HKEY);}
+function pickRandom(pool,n){return[...pool].sort(()=>Math.random()-.5).slice(0,Math.min(n,pool.length));}
+
+let questions=[],current=0,score=0,timeLeft=0,timer,roundLog=[];
+let cfgLevel="easy",cfgCat="random",cfgCount=2;
+let selectedImgIdx=null; // индекс выбранной картинки в текущем раунде
+let roundImages=[]; // картинки текущего раунда (главная + референсы)
+const TIMER_EASY=10,TIMER_MEDIUM=7;
+
+// AUDIO
+let ctx,gainNode,playing=false,oscArr=[];
+function initAudio(){if(ctx)return;ctx=new(window.AudioContext||window.webkitAudioContext)();gainNode=ctx.createGain();gainNode.gain.value=parseFloat(document.getElementById("vol").value);gainNode.connect(ctx.destination);}
+function setVol(v){if(gainNode)gainNode.gain.value=parseFloat(v);}
+function startMusic(){
+  initAudio();stopMusic();playing=true;
+  const bpm=128,beat=60/bpm,now=ctx.currentTime;
+  const seq=[55,0,55,0,73,0,69,0,55,0,55,0,65,0,62,0];
+  function playSeq(t0){seq.forEach((note,i)=>{if(!note)return;const o=ctx.createOscillator(),g=ctx.createGain();o.type="square";o.frequency.value=note;o.connect(g);g.connect(gainNode);const t=t0+i*beat*.5;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.08,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+beat*.45);o.start(t);o.stop(t+beat*.45);oscArr.push(o);});}
+  playSeq(now);const ll=seq.length*beat*.5;let lt=now+ll;
+  function loop(){if(!playing)return;playSeq(lt);lt+=ll;setTimeout(loop,(ll-.2)*1000);}
+  setTimeout(loop,(ll-.2)*1000);
+  function hh(){if(!playing)return;const buf=ctx.createBuffer(1,ctx.sampleRate*.05,ctx.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*.3;const s=ctx.createBufferSource(),g=ctx.createGain();s.buffer=buf;s.connect(g);g.connect(gainNode);g.gain.setValueAtTime(.15,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.05);s.start();setTimeout(hh,beat*500);}
+  hh();
+  document.getElementById("mbtn").textContent="STOP";
+  document.getElementById("mlbl").textContent="CIPHER_01";
+  document.getElementById("eq").classList.remove("paused");
+}
+function stopMusic(){
+  playing=false;oscArr.forEach(o=>{try{o.stop();}catch(e){}});oscArr=[];
+  const b=document.getElementById("mbtn"),l=document.getElementById("mlbl"),e=document.getElementById("eq");
+  if(b)b.textContent="PLAY";if(l)l.textContent="AUDIO: OFF";if(e)e.classList.add("paused");
+}
+function toggleMusic(){playing?stopMusic():startMusic();}
+
+// ── МЕНЮ ──
+function showMenu(){
+  const h=loadH(),best=h.length?Math.max(...h.map(r=>r.pct)):null;
+  document.getElementById("app").innerHTML=`
+    <div class="card">
+      <div class="card-label">// select difficulty</div>
+      <div style="font-size:9px;color:var(--g4);margin-bottom:8px;line-height:1.7;">
+        EASY — таймер ${TIMER_EASY}с, ошибки разрешены<br>
+        MEDIUM — таймер ${TIMER_MEDIUM}с, одна ошибка = провал
+      </div>
+      <div class="diff-btns">
+        <button class="btn btn-g" onclick="cfgLevel='easy';showCat()">[ EASY ]</button>
+        <button class="btn btn-r" onclick="cfgLevel='medium';showCat()">[ MEDIUM ]</button>
+      </div>
+    </div>
+    <button class="btn-ghost" onclick="showHistory()">&gt; HISTORY_LOG [${h.length}]${best!==null?' // BEST: '+best+'%':''}</button>
+    <div class="home-bottom">
+      <div class="hb-title">// Насколько у тебя зоркий глаз?</div>
+      С каждым днём ИИ совершенствуется, и отличить сгенерированную фотографию от реальной становится всё сложнее. Попробуй применить свои знания в нашем тесте!
+    </div>`;
+}
+
+// ── КАТЕГОРИЯ ──
+function showCat(){cfgCat="random";cfgCount=2;renderCat();}
+
+function renderCat(){
+  const pool = getPool();
+  // Теперь считаем общее нужное количество: 10 вопросов * количество картинок в раунде
+  const totalNeeded = 10 * cfgCount; 
+  const enough = pool.length >= totalNeeded;
+
+  const catHtml = Object.entries(CATS).map(([k,v])=>`
+    <button class="cat-btn${cfgCat===k?' selected':''}" onclick="cfgCat='${k}';renderCat()"
+      style="${cfgCat===k?'border-color:'+v.color+';':''}">
+      <span class="cat-icon" style="color:${v.color};">${v.icon}</span>
+      <span class="cat-name">${v.label}</span>
+    </button>`).join("");
+
+  // Текст на кнопках выбора количества
+  const countInfo = {2: "Всего 20", 3: "Всего 30", 4: "Всего 40"};
+  const countHtml = [2, 3, 4].map(n => `
+    <button class="count-btn${cfgCount===n?' selected':''}" onclick="cfgCount=${n};renderCat()">
+      ${n}<div class="count-sub">${countInfo[n]}</div>
+    </button>`).join("");
+
+  document.getElementById("app").innerHTML = `
+    <div class="card">
+      <div class="card-label">// category — ${cfgLevel.toUpperCase()}</div>
+      <div class="cat-grid">${catHtml}</div>
+      <div style="font-size:9px;color:var(--g4);margin-top:6px;letter-spacing:1px;">
+        ДОСТУПНО: ${pool.length} изображений
+        ${!enough ? ` <span style="color:var(--red)">// МАЛО (нужно ${totalNeeded})</span>` : ''}
+      </div>
+    </div>
+    <div class="card" style="margin-top:0;">
+      <div class="card-label">// сложность раунда</div>
+      <div style="font-size:9px;color:var(--g4);margin-bottom:6px;letter-spacing:1px;">
+        Система выберет 10 вопросов по ${cfgCount} фото в каждом
+      </div>
+      <div class="count-row">${countHtml}</div>
+    </div>
+    <button class="start-btn" ${!enough ? 'disabled' : ''} onclick="startGame()">&gt;&gt; LAUNCH_SCAN</button>
+    <button class="btn-ghost" onclick="showMenu()">&gt; BACK</button>`;
+}
+
+// Функция перебора форматов картинки
+function tryNextFormat(img) {
+  // 1. Безопасно достаем массив с форматами из HTML
+  const altsStr = img.getAttribute('data-alts');
+  if (!altsStr) return;
+  
+  const altPaths = JSON.parse(altsStr);
+  let currentIndex = parseInt(img.getAttribute('data-index') || "0");
+  currentIndex++; // Переходим к следующему формату в списке
+  
+  if (currentIndex < altPaths.length) {
+    // 2. Пробуем загрузить следующий формат (.png, .webp и т.д.)
+    img.setAttribute('data-index', currentIndex);
+    img.src = altPaths[currentIndex];
+  } else {
+    // 3. Если перебрали ВСЕ форматы и файла нет на компьютере — ставим заглушку
+    img.onerror = null; // Отключаем проверку, чтобы не было бесконечного цикла
+    
+    // Это встроенная картинка в формате SVG. Ей не нужен интернет!
+    img.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' style='background:%23060f06;'%3E%3Ctext x='50%25' y='50%25' fill='%23007a1f' font-family='monospace' font-size='20' text-anchor='middle' dominant-baseline='middle'%3ENOT_FOUND%3C/text%3E%3C/svg%3E";
+  }
+}
+// ── ИГРА ──
+function startGame(){
+  const pool = getPool();
+  // Используем нашу новую функцию, чтобы выбрать 10 вопросов
+  questions = pickRandom(pool, 10); 
+  
+  current=0; score=0; roundLog=[];
+  nextQ();
+}
+
+function nextQ(){
+  clearInterval(timer);
+  timeLeft=cfgLevel==="easy"?TIMER_EASY:TIMER_MEDIUM;
+  selectedImgIdx=cfgCount===1?0:null; // если одна картинка — сразу выбрана
+
+  const q=questions[current];
+  const otherPool=getPool().filter(x=>x.image!==q.image);
+  const refs=pickRandom(otherPool,cfgCount-1);
+  // перемешиваем все картинки раунда — главная прячется среди референсов
+  roundImages=[{...q,isTarget:true},...refs.map(r=>({...r,isTarget:false}))].sort(()=>Math.random()-.5);
+
+  renderQuiz();
+
+  timer=setInterval(()=>{
+    timeLeft--;
+    const el=document.getElementById("tsec"),bar=document.getElementById("tbar");
+    if(el)el.textContent=timeLeft+"S";
+    if(bar)bar.style.width=(timeLeft/(cfgLevel==="easy"?TIMER_EASY:TIMER_MEDIUM)*100)+"%";
+    if(timeLeft<=0)answer(null);
+  },1000);
+}
+
+function renderQuiz(){
+  const q = questions[current];
+  const gridClass = `images-grid n${cfgCount}`;
+  
+// Генерируем ячейки (ИСПОЛЬЗУЕМ ОДИНАРНЫЕ КАВЫЧКИ для onerror='')
+  // Генерируем ячейки (используем безопасный data-alts)
+  const cellsHtml = roundImages.map((item, idx) => `
+    <div class="img-cell ${selectedImgIdx === idx ? 'selected' : ''}" id="imgcell_${idx}" onclick="selectImg(${idx})">
+      
+      <img src="${item.image}" 
+           data-index="0" 
+           data-alts='${JSON.stringify(item.altPaths)}'
+           onerror="tryNextFormat(this)" 
+           loading="lazy" />
+      
+      <div class="img-corner tl"></div><div class="img-corner tr"></div>
+      <div class="img-corner bl"></div><div class="img-corner br"></div>
+    </div>`).join("");
+    
+  document.getElementById("app").innerHTML = `
+    <div class="card">
+      <div class="card-label">// scan ${current+1}/10</div>
+      <div class="meta">
+        <span>${CATS[cfgCat].label}</span>
+        <span id="tsec">${timeLeft}S</span>
+      </div>
+      <div class="timer-bar-wrap">
+        <div class="timer-bar" id="tbar" style="width:100%"></div>
+      </div>
+      
+      <div class="${gridClass}">${cellsHtml}</div>
+      
+      <div class="select-hint" id="selHint">
+        ${selectedImgIdx !== null ? 'ВЕРДИКТ_ГОТОВ' : 'ВЫБЕРИТЕ_ОБЪЕКТ_ДЛЯ_АНАЛИЗА'}
+      </div>
+      
+      <div class="ans-btns">
+        <button class="ans-btn btn-r" id="btnAi" onclick="answer('ai')" ${selectedImgIdx===null?'disabled':''}>[ AI ]</button>
+        <button class="ans-btn btn-g" id="btnReal" onclick="answer('real')" ${selectedImgIdx===null?'disabled':''}>[ HUMAN ]</button>
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div id="artPanel"></div>
+    </div>`;
+}
+function selectImg(idx){
+  if(selectedImgIdx!==null&&document.getElementById("fb")&&document.getElementById("fb").textContent) return;
+  selectedImgIdx=idx;
+  // обновляем выделение ячеек
+  roundImages.forEach((_,i)=>{
+    const cell=document.getElementById("imgcell_"+i);
+    if(cell){cell.classList.toggle("selected",i===idx);}
+  });
+  // разблокируем кнопки и обновляем подсказку
+  const btnAi=document.getElementById("btnAi"),btnReal=document.getElementById("btnReal");
+  const hint=document.getElementById("selHint");
+  if(btnAi){btnAi.disabled=false;}
+  if(btnReal){btnReal.disabled=false;}
+  if(hint){hint.textContent="Теперь выбери: это ИИ или человек?";hint.className="select-hint active";}
+}
+
+function answer(user){
+  clearInterval(timer);
+  const targetItem = roundImages[selectedImgIdx || 0];
+  const correct = user === targetItem.answer;
+  const fb = document.getElementById("fb");
+  const ap = document.getElementById("artPanel");
+
+  // Блокируем кнопки
+  const btnAi = document.getElementById("btnAi");
+  const btnReal = document.getElementById("btnReal");
+  if(btnAi) btnAi.disabled = true;
+  if(btnReal) btnReal.disabled = true;
+
+  // Формируем артефакты для логов
+  const arts = targetItem.answer === "ai" ? detectArtifacts() : [];
+  roundLog.push({q: targetItem, userAnswer: user, correct: correct, arts: arts});
+
+  if(correct) {
+    score++;
+    if(fb) {
+      fb.innerHTML = `<span style="color:var(--g)">ВЕРНО: ДОСТУП РАЗРЕШЕН</span>`;
+      fb.className = "feedback ok";
+    }
+    if(ap) {
+      ap.innerHTML = `<div style="font-size:9px;color:var(--g3);padding:4px;letter-spacing:.5px;">// ${targetItem.explanation}</div>`;
+    }
+  } else {
+    if(fb) {
+      fb.innerHTML = `<span style="color:var(--red)">ОШИБКА: ОБЪЕКТ ИДЕНТИФИЦИРОВАН НЕВЕРНО</span>`;
+      fb.className = "feedback err";
+    }
+    
+    let artHtml = "";
+    if(targetItem.answer === "ai") {
+      artHtml = `<div class="artifacts"><div class="art-title">// ТЕХНИЧЕСКИЙ АНАЛИЗ [ВЫЯВЛЕНЫ АРТЕФАКТЫ]</div>${arts.map(a=>`<div class="art-row"><div class="art-dot" style="background:var(--red)"></div><b style="color:var(--red)">${a.label}:</b>&nbsp;${a.sign}</div>`).join("")}</div>`;
+    } else {
+      artHtml = `<div class="artifacts"><div class="art-title">// это реальный снимок</div><div class="art-row"><div class="art-dot" style="background:var(--g3)"></div>${targetItem.explanation}</div></div>`;
+    }
+    if(ap) ap.innerHTML = artHtml;
+  }
+
+  current++;
+  
+  // Проверяем правила игры и переходим к следующему шагу
+  if (!correct && cfgLevel === "medium") {
+    setTimeout(() => showGameOver(), 2500);
+  } else {
+    setTimeout(() => {
+      if (current < 10) nextQ();
+      else showResult();
+    }, 2500);
+  }
+}
+
+function showGameOver(){
+  document.getElementById("app").innerHTML=`
+    <div class="card" style="text-align:center;">
+      <div class="card-label">// mission_failed</div>
+      <div class="gameover-big">ПРОВАЛ</div>
+      <div style="font-size:10px;color:var(--red);margin-bottom:8px;letter-spacing:1px;">Одна ошибка на MEDIUM = конец игры</div>
+      <div style="font-size:9px;color:var(--g3);margin-bottom:12px;">Пройдено: ${current}/10 &nbsp;|&nbsp; Верно: ${score}</div>
+      <div class="diff-btns">
+        <button class="btn btn-r" onclick="startGame()">[ RETRY ]</button>
+        <button class="btn btn-g" onclick="showResult()">[ РЕЗУЛЬТАТ ]</button>
+      </div>
+    </div>
+    <div class="two-btns">
+      <button class="btn-ghost" onclick="renderCat()">&gt; НАСТРОЙКИ</button>
+      <button class="btn-ghost" onclick="showMenu()">&gt; МЕНЮ</button>
+    </div>`;
+}
+
+function showResult(){
+  clearInterval(timer);
+  const total=roundLog.length;
+  const pct=total>0?Math.round(score/total*100):0;
+  const rank=pct===100?"ELITE_ANALYST":pct>=80?"SENIOR_AGENT":pct>=60?"FIELD_AGENT":pct>=40?"RECRUIT":"NEEDS_TRAINING";
+  const tips=getTips(pct);
+  const now=new Date();
+  const dateStr=now.toLocaleDateString("ru-RU",{day:"2-digit",month:"2-digit",year:"2-digit"})+" "+now.toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"});
+  addResult({score,total,pct,level:cfgLevel==="easy"?"Легко":"Средне",cat:CATS[cfgCat].label,count:cfgCount,date:dateStr});
+
+  const reviewHtml=roundLog.map((log,i)=>{
+    const uLbl=log.userAnswer==="ai"?"AI_GEN":log.userAnswer==="real"?"HUMAN":"TIMEOUT";
+    const rLbl=log.q.answer==="ai"?"AI_GEN":"HUMAN";
+    const artInfo=(!log.correct&&log.arts&&log.arts.length)?
+      `<div style="color:var(--g4);font-size:7px;">АРТЕФАКТЫ: ${log.arts.map(a=>a.label).join(", ")}</div>`:"";
+    return `<div class="review-item">
+      <div class="review-hdr ${log.correct?'correct':'wrong'}">
+        <img class="review-img" src="${log.q.image}" onerror="this.style.display='none'">
+        <div class="review-info">
+          <div style="color:${log.correct?'var(--g2)':'var(--red)'};">${log.correct?'✓':'✗'} #${i+1}</div>
+          <div>ВЫ: ${uLbl} &nbsp;|&nbsp; ФАКТ: ${rLbl}</div>
+          <div style="color:var(--g4);">${log.q.explanation}</div>
+          ${artInfo}
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+
+  const tipsHtml=tips.map(t=>`<div class="art-row"><div class="art-dot" style="background:var(--g3);"></div>${t}</div>`).join("");
+
+  document.getElementById("app").innerHTML=`
+    <div class="card">
+      <div class="card-label">// mission_report — ${CATS[cfgCat].label} [${cfgLevel.toUpperCase()}]</div>
+      <div class="score-big">${pct}%</div>
+      <div style="font-size:10px;color:#3a5a7a;text-align:center;margin-bottom:4px;">${score}/${total} верных ответов</div>
+      <div class="rank">&gt; ${rank}</div>
+      <div class="advice-box">
+        <div class="advice-title">// советы для результата ${pct}%</div>
+        ${tipsHtml}
+      </div>
+      <div class="card-label" style="margin-top:8px;">// разбор раунда</div>
+      ${reviewHtml}
+      <div class="diff-btns" style="margin-top:8px;">
+        <button class="btn btn-g" onclick="startGame()">[ RETRY ]</button>
+        <button class="btn btn-r" onclick="showHistory()">[ LOGS ]</button>
+      </div>
+    </div>
+    <div class="two-btns">
+      <button class="btn-ghost" onclick="renderCat()">&gt; НАСТРОЙКИ</button>
+      <button class="btn-ghost" onclick="showMenu()">&gt; МЕНЮ</button>
+    </div>`;
+}
+
+function showHistory(){renderHistory("all");}
+function renderHistory(filter){
+  const h=loadH();
+  const tabDefs=[["all","ALL"],["easy","EASY"],["medium","MED"]];
+  const filtered=filter==="all"?h:h.filter(r=>r.level===(filter==="easy"?"Легко":"Средне"));
+  const avg=filtered.length?Math.round(filtered.reduce((s,r)=>s+r.pct,0)/filtered.length):null;
+  const best=filtered.length?Math.max(...filtered.map(r=>r.pct)):null;
+  const worst=filtered.length?Math.min(...filtered.map(r=>r.pct)):null;
+  const tabs=tabDefs.map(([k,l])=>`<button class="tab ${filter===k?'active':''}" onclick="renderHistory('${k}')">${l}</button>`).join("");
+  const stats=filtered.length?`<div class="stats-grid">
+    <div class="stat-cell"><div class="stat-lbl">SESSIONS</div><div class="stat-val">${filtered.length}</div></div>
+    <div class="stat-cell"><div class="stat-lbl">BEST</div><div class="stat-val">${best}%</div></div>
+    <div class="stat-cell"><div class="stat-lbl">AVG</div><div class="stat-val">${avg}%</div></div>
+    <div class="stat-cell"><div class="stat-lbl">WORST</div><div class="stat-val">${worst}%</div></div>
+  </div>`:"";
+  const rows=!filtered.length?`<div class="empty-hist">// NO_RECORDS_FOUND</div>`:
+    filtered.map(r=>`<div class="hist-row">
+      <div class="hist-pct">${r.pct}%</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;flex-wrap:wrap;">
+          <span class="badge ${r.level==='Легко'?'badge-easy':'badge-med'}">${r.level==='Легко'?'EASY':'MED'}</span>
+          ${r.cat?`<span class="badge" style="border-color:var(--border2);color:var(--g4);">${r.cat}</span>`:''}
+          ${r.count?`<span class="badge" style="border-color:var(--border2);color:var(--g4);">${r.count}IMG</span>`:''}
+          <span style="font-size:7px;color:#3a5a7a;">${r.score}/${r.total} ${r.date}</span>
+        </div>
+        <div class="bar-wrap"><div class="bar-fill" style="width:${r.pct}%"></div></div>
+      </div>
+    </div>`).join("");
+  document.getElementById("app").innerHTML=`
+    <div class="tab-row">${tabs}</div>
+    ${stats}
+    <div class="card" style="padding:4px 12px;width:100%;max-width:400px;">${rows}</div>
+    <div class="two-btns">
+      <button class="btn-ghost" onclick="showMenu()">&gt; MENU</button>
+      ${h.length?`<button class="btn-ghost danger" onclick="confirmClear()">&gt; WIPE_LOGS</button>`:`<div></div>`}
+    </div>`;
+}
+function confirmClear(){
+  document.getElementById("app").innerHTML+=`
+    <div class="card" style="margin-top:6px;width:100%;max-width:400px;">
+      <div class="card-label">// confirm_wipe</div>
+      <div style="font-size:9px;color:var(--red);margin-bottom:8px;">&gt; УДАЛИТЬ ВСЕ ЗАПИСИ?</div>
+      <div class="diff-btns">
+        <button class="btn btn-r" onclick="clearH();showHistory()">[ CONFIRM ]</button>
+        <button class="btn btn-g" onclick="showHistory()">[ ABORT ]</button>
+      </div>
+    </div>`;
+}
+
+showMenu();
+</script>
