@@ -292,7 +292,7 @@ function saveH(h){try{localStorage.setItem(HKEY,JSON.stringify(h));}catch(e){}}
 function addResult(e){const h=loadH();h.unshift(e);if(h.length>60)h.length=60;saveH(h);}
 function clearH(){localStorage.removeItem(HKEY);}
 
-let questions=[],current=0,score=0,timeLeft=0,timer,roundLog=[];
+let questions=[],current=0,score=0,timeLeft=0,timer,roundLog=[],usedImages=[];
 let cfgLevel="easy",cfgCat="random",cfgCount=2;
 let selectedImgIdx=null;
 let roundImages=[];
@@ -403,6 +403,11 @@ function tryNextFormat(img) {
 function startGame(){
   const pool = getPool();
   questions = pickRandom(pool, 10); 
+  
+  // Записываем все 10 главных картинок-вопросов в память, 
+  // чтобы они случайно не появились на фоне в других вопросах
+  usedImages = questions.map(q => q.image);
+  
   current=0; score=0; roundLog=[];
   nextQ();
 }
@@ -414,13 +419,23 @@ function nextQ(){
 
   const q=questions[current];
   
-  // УМНАЯ ФИЛЬТРАЦИЯ: Берем для сравнения только противоположные картинки!
-  // Если правильный ответ (q.answer) — это 'ai', то для фона берем только 'real'.
-  const otherPool=getPool().filter(x => x.image !== q.image && x.answer !== q.answer);
+  // Ищем картинки для фона:
+  // 1. Противоположного типа (ИИ vs Человек)
+  // 2. Те, которых НЕТ в нашем списке usedImages (еще не показывались)
+  let otherPool = getPool().filter(x => x.answer !== q.answer && !usedImages.includes(x.image));
   
+  // Защитный механизм: если уникальных картинок вдруг не хватило (мало файлов в папке),
+  // разрешаем игре временно брать повторяющиеся, чтобы игра не зависла
+  if (otherPool.length < cfgCount - 1) {
+    otherPool = getPool().filter(x => x.image !== q.image && x.answer !== q.answer);
+  }
+
   const refs=pickRandom(otherPool,cfgCount-1);
   
-  // Перемешиваем цель и противоположные картинки, чтобы ИИ и Человек всегда были вместе
+  // Добавляем выбранные фоновые картинки в память, чтобы не использовать их в следующих раундах
+  refs.forEach(r => usedImages.push(r.image));
+
+  // Перемешиваем цель и фон
   roundImages=[{...q,isTarget:true},...refs.map(r=>({...r,isTarget:false}))].sort(()=>Math.random()-.5);
 
   renderQuiz();
