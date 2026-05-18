@@ -144,6 +144,83 @@ input[type=range].vol{width:46px;accent-color:var(--g);height:2px;}
 .stat-cell{background:var(--bg3);border:1px solid var(--border);padding:7px;text-align:center;}
 .stat-lbl{font-size:8px;color:var(--g3);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
 .stat-val{font-size:16px;color:var(--g);}
+</style
+.card, .btn-ghost, .two-btns, .start-btn, .home-bottom, .tab-row, .stats-grid {
+  max-width: 700px !important; 
+}
+/* =========================================
+   ПАТЧ 2: КИБЕРПАНК АНИМАЦИИ
+   ========================================= */
+
+/* 1. Плавное появление всех карточек (эффект загрузки терминала) */
+@keyframes bootUp {
+  0% { opacity: 0; transform: translateY(15px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.card {
+  animation: bootUp 0.4s ease-out forwards;
+}
+
+/* 2. Движущаяся линия сканера (оживляем фон) */
+@keyframes scanMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 100vh; }
+}
+.scanline {
+  /* Добавляем анимацию к твоим существующим полосам */
+  animation: scanMove 12s linear infinite; 
+}
+
+/* 3. Неоновое свечение кнопок при наведении */
+.btn:hover, .start-btn:hover, .cat-btn:hover, .count-btn:hover {
+  box-shadow: 0 0 12px rgba(0, 255, 65, 0.3);
+  text-shadow: 0 0 4px rgba(0, 255, 65, 0.5);
+}
+
+/* Красное свечение для кнопок ИИ и опасных действий */
+.btn-r:hover, .ans-btn.btn-r:not(:disabled):hover, .btn-ghost.danger:hover {
+  box-shadow: 0 0 12px rgba(226, 75, 74, 0.4) !important;
+  text-shadow: 0 0 4px rgba(226, 75, 74, 0.5) !important;
+}
+
+/* 4. Пульсирующая рамка у выбранной картинки */
+@keyframes pulseTarget {
+  0% { box-shadow: 0 0 10px rgba(0, 255, 65, 0.3); }
+  50% { box-shadow: 0 0 25px rgba(0, 255, 65, 0.8); }
+  100% { box-shadow: 0 0 10px rgba(0, 255, 65, 0.3); }
+}
+.img-cell.selected {
+  animation: pulseTarget 1.5s infinite !important;
+}
+/* Увеличиваем заголовок и описание */
+.hdr-title { font-size: 28px !important; }
+.hdr-sub { font-size: 15px !important; max-width: 600px !important; }
+.card-label { font-size: 14px !important; }
+
+/* Увеличиваем основные кнопки */
+.btn { font-size: 16px !important; padding: 14px !important; }
+.btn-ghost { font-size: 14px !important; padding: 12px !important; }
+.start-btn { font-size: 18px !important; padding: 16px !important; }
+.ans-btn { font-size: 18px !important; padding: 15px !important; }
+
+/* Увеличиваем кнопки категорий и их иконки */
+.cat-btn { font-size: 14px !important; padding: 12px 10px !important; }
+.cat-icon { font-size: 24px !important; width: 30px !important; }
+
+/* Увеличиваем кнопки выбора количества картинок */
+.count-btn { font-size: 32px !important; padding: 16px 10px !important; }
+.count-sub { font-size: 12px !important; }
+
+/* Увеличиваем игровые элементы и логи */
+.select-hint { font-size: 15px !important; min-height: 20px !important; margin-bottom: 10px !important; }
+.feedback { font-size: 16px !important; min-height: 24px !important; }
+.art-title, .advice-title { font-size: 13px !important; }
+.art-row, .advice-box { font-size: 13px !important; line-height: 1.6; }
+.score-big { font-size: 72px !important; }
+.rank { font-size: 16px !important; }
+.meta, .music-lbl, .mbtn { font-size: 12px !important; }
+.hb-title { font-size: 15px !important; }
+.home-bottom { font-size: 13px !important; }
 </style>
 
 <div class="root">
