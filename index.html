@@ -6,8 +6,8 @@ html, body {
   margin: 0;
   padding: 0;
   width: 100%;
-  min-height: 100vh; /* Занимает 100% высоты экрана */
-  background-color: #020c02; /* Закрашиваем фон браузера в цвет твоего интерфейса */
+  min-height: 100vh;
+  background-color: #020c02;
 }
 
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -53,7 +53,6 @@ input[type=range].vol{width:46px;accent-color:var(--g);height:2px;}
 .home-bottom{width:100%;max-width:400px;margin-top:10px;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);font-size:9px;color:var(--g3);line-height:1.9;letter-spacing:.5px;}
 .home-bottom .hb-title{font-size:11px;color:var(--g2);letter-spacing:2px;margin-bottom:6px;text-transform:uppercase;}
 
-/* КАТЕГОРИИ — 2 столбца, фиксированная высота */
 .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;}
 .cat-btn{background:var(--bg3);border:1px solid var(--border);color:var(--g3);font-family:'Share Tech Mono',monospace;font-size:9px;padding:8px 6px;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;text-align:center;transition:all .15s;display:flex;align-items:center;gap:8px;width:100%;}
 .cat-btn:hover{border-color:var(--g3);color:var(--g);}
@@ -61,21 +60,18 @@ input[type=range].vol{width:46px;accent-color:var(--g);height:2px;}
 .cat-icon{font-size:16px;flex-shrink:0;width:22px;text-align:center;}
 .cat-name{flex:1;text-align:left;}
 
-/* count */
 .count-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;}
 .count-btn{background:var(--bg3);border:1px solid var(--border);color:var(--g3);font-family:'Share Tech Mono',monospace;font-size:20px;padding:10px 4px;cursor:pointer;text-align:center;transition:all .15s;}
 .count-btn:hover{border-color:var(--g3);color:var(--g);}
 .count-btn.selected{border-color:var(--g);color:var(--g);background:rgba(0,255,65,.06);}
 .count-sub{font-size:8px;color:var(--g4);letter-spacing:1px;margin-top:2px;}
 
-/* QUIZ IMAGE GRID */
 .images-grid{display:grid;gap:5px;margin-bottom:10px;}
 .images-grid.n1{grid-template-columns:1fr;}
 .images-grid.n2{grid-template-columns:1fr 1fr;}
 .images-grid.n3{grid-template-columns:1fr 1fr 1fr;}
 .images-grid.n4{grid-template-columns:1fr 1fr;}
 
-/* Ячейка картинки — кликабельная */
 .img-cell{position:relative;aspect-ratio:1;background:var(--bg3);overflow:hidden;border:2px solid var(--border);cursor:pointer;transition:border-color .15s,box-shadow .15s;}
 .img-cell:hover{border-color:var(--g3);}
 .img-cell.selected{border-color:var(--g);box-shadow:0 0 10px rgba(0,255,65,.35);}
@@ -90,11 +86,9 @@ input[type=range].vol{width:46px;accent-color:var(--g);height:2px;}
 .img-cell.selected .img-sel-badge{display:block;}
 .img-pholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--g4);text-align:center;padding:4px;line-height:1.4;}
 
-/* hint */
 .select-hint{font-size:9px;color:var(--g4);text-align:center;letter-spacing:1px;margin-bottom:6px;min-height:14px;}
 .select-hint.active{color:var(--amber);}
 
-/* answer buttons — disabled until image selected */
 .ans-btns{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px;}
 .ans-btn{padding:10px;border:1px solid;font-family:'Share Tech Mono',monospace;font-size:12px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all .15s;background:transparent;}
 .ans-btn:disabled{opacity:.3;cursor:not-allowed;}
@@ -144,74 +138,22 @@ input[type=range].vol{width:46px;accent-color:var(--g);height:2px;}
 .stat-cell{background:var(--bg3);border:1px solid var(--border);padding:7px;text-align:center;}
 .stat-lbl{font-size:8px;color:var(--g3);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
 .stat-val{font-size:16px;color:var(--g);}
-</style
-.card, .btn-ghost, .two-btns, .start-btn, .home-bottom, .tab-row, .stats-grid {
-  max-width: 700px !important; 
-}
-/* =========================================
-   ПАТЧ 2: КИБЕРПАНК АНИМАЦИИ
-   ========================================= */
 
-/* 1. Плавное появление всех карточек (эффект загрузки терминала) */
-@keyframes bootUp {
-  0% { opacity: 0; transform: translateY(15px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-.card {
-  animation: bootUp 0.4s ease-out forwards;
-}
-
-/* 2. Движущаяся линия сканера (оживляем фон) */
-@keyframes scanMove {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 100vh; }
-}
-.scanline {
-  /* Добавляем анимацию к твоим существующим полосам */
-  animation: scanMove 12s linear infinite; 
-}
-
-/* 3. Неоновое свечение кнопок при наведении */
-.btn:hover, .start-btn:hover, .cat-btn:hover, .count-btn:hover {
-  box-shadow: 0 0 12px rgba(0, 255, 65, 0.3);
-  text-shadow: 0 0 4px rgba(0, 255, 65, 0.5);
-}
-
-/* Красное свечение для кнопок ИИ и опасных действий */
-.btn-r:hover, .ans-btn.btn-r:not(:disabled):hover, .btn-ghost.danger:hover {
-  box-shadow: 0 0 12px rgba(226, 75, 74, 0.4) !important;
-  text-shadow: 0 0 4px rgba(226, 75, 74, 0.5) !important;
-}
-
-/* 4. Пульсирующая рамка у выбранной картинки */
-@keyframes pulseTarget {
-  0% { box-shadow: 0 0 10px rgba(0, 255, 65, 0.3); }
-  50% { box-shadow: 0 0 25px rgba(0, 255, 65, 0.8); }
-  100% { box-shadow: 0 0 10px rgba(0, 255, 65, 0.3); }
-}
-.img-cell.selected {
-  animation: pulseTarget 1.5s infinite !important;
-}
-/* Увеличиваем заголовок и описание */
+/* =======================================================
+   ДОПОЛНИТЕЛЬНЫЙ ПАТЧ: МАСШТАБИРОВАНИЕ И КИБЕРПАНК-АНИМАЦИИ 
+   ======================================================= */
+.card, .btn-ghost, .two-btns, .start-btn, .home-bottom, .tab-row, .stats-grid { max-width: 700px !important; }
 .hdr-title { font-size: 28px !important; }
 .hdr-sub { font-size: 15px !important; max-width: 600px !important; }
 .card-label { font-size: 14px !important; }
-
-/* Увеличиваем основные кнопки */
 .btn { font-size: 16px !important; padding: 14px !important; }
 .btn-ghost { font-size: 14px !important; padding: 12px !important; }
 .start-btn { font-size: 18px !important; padding: 16px !important; }
 .ans-btn { font-size: 18px !important; padding: 15px !important; }
-
-/* Увеличиваем кнопки категорий и их иконки */
 .cat-btn { font-size: 14px !important; padding: 12px 10px !important; }
 .cat-icon { font-size: 24px !important; width: 30px !important; }
-
-/* Увеличиваем кнопки выбора количества картинок */
 .count-btn { font-size: 32px !important; padding: 16px 10px !important; }
 .count-sub { font-size: 12px !important; }
-
-/* Увеличиваем игровые элементы и логи */
 .select-hint { font-size: 15px !important; min-height: 20px !important; margin-bottom: 10px !important; }
 .feedback { font-size: 16px !important; min-height: 24px !important; }
 .art-title, .advice-title { font-size: 13px !important; }
@@ -221,6 +163,15 @@ input[type=range].vol{width:46px;accent-color:var(--g);height:2px;}
 .meta, .music-lbl, .mbtn { font-size: 12px !important; }
 .hb-title { font-size: 15px !important; }
 .home-bottom { font-size: 13px !important; }
+
+@keyframes bootUp { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
+.card { animation: bootUp 0.4s ease-out forwards; }
+@keyframes scanMove { 0% { background-position: 0 0; } 100% { background-position: 0 100vh; } }
+.scanline { animation: scanMove 12s linear infinite; }
+.btn:hover, .start-btn:hover, .cat-btn:hover, .count-btn:hover { box-shadow: 0 0 12px rgba(0, 255, 65, 0.3); text-shadow: 0 0 4px rgba(0, 255, 65, 0.5); }
+.btn-r:hover, .ans-btn.btn-r:not(:disabled):hover, .btn-ghost.danger:hover { box-shadow: 0 0 12px rgba(226, 75, 74, 0.4) !important; text-shadow: 0 0 4px rgba(226, 75, 74, 0.5) !important; }
+@keyframes pulseTarget { 0% { box-shadow: 0 0 10px rgba(0, 255, 65, 0.3); } 50% { box-shadow: 0 0 25px rgba(0, 255, 65, 0.8); } 100% { box-shadow: 0 0 10px rgba(0, 255, 65, 0.3); } }
+.img-cell.selected { animation: pulseTarget 1.5s infinite !important; }
 </style>
 
 <div class="root">
@@ -252,13 +203,12 @@ const CATS={
   surreal:  {label:"Сюрреализм", icon:"◭", color:"#3adcff"},
 };
 
-// Функция для создания правильного пути и описания картинки
+// Исправленная функция путей (без images/)
 function mp(cat, type, n, desc) {
-  const extensions = ['jpg', 'avif', 'png', 'webp', 'jpeg', 'png'];
-  // Путь: images/portrait/real/portrait_real (1).jpg
-  const baseName = `images/${cat}/${type}/${cat}_${type} (${n})`;
+  const extensions = ['jpg', 'avif', 'png', 'webp', 'jpeg'];
+  const baseName = `${cat}/${type}/${cat}_${type} (${n})`;
   return {
-    image: `${baseName}.${extensions[0]}`, // Сначала пробуем .jpg
+    image: `${baseName}.${extensions[0]}`,
     answer: type,
     explanation: desc || (type === 'ai' ? 'ИИ-генерация' : 'Реальное фото'),
     category: cat,
@@ -266,7 +216,6 @@ function mp(cat, type, n, desc) {
   };
 }
 
-// ЕДИНАЯ функция генерации пака картинок с описаниями
 function generatePack(cat) {
   const pack = [];
   const descriptions = {
@@ -279,7 +228,6 @@ function generatePack(cat) {
     surreal:  { real: "Замысел художника, четкие края", ai: "Бессмысленные ИИ-галлюцинации" }
   };
 
-  // Создаем по 20 реальных и 20 ИИ картинок для категории
   for (let i = 1; i <= 20; i++) {
     pack.push(mp(cat, 'real', i, descriptions[cat].real));
     pack.push(mp(cat, 'ai', i, descriptions[cat].ai));
@@ -295,9 +243,8 @@ const POOL = {
   animals:  generatePack('animals'),
   food:     generatePack('food'),
   surreal:  generatePack('surreal')
-}; // <-- Вот здесь заканчивается твой POOL
+};
 
-// ВСТАВЛЯЙ ФУНКЦИЮ СЮДА:
 function getPool() {
   if (cfgCat === 'random') {
     return Object.values(POOL).flat();
@@ -318,29 +265,17 @@ const ARTIFACT_DB=[
   {label:"Окружение",   signs:["Предметы парят в воздухе","Сливание объектов"]}
 ];
 
-// Функция для выбора случайных картинок с поддержкой зацикливания
 function pickRandom(pool, n) {
   if (!pool || pool.length === 0) return [];
   let arr = [...pool];
   arr.sort(() => Math.random() - 0.5);
-  
-  if (n > arr.length) {
-    let extra = [];
-    while (extra.length < n) {
-      extra = extra.concat([...arr].sort(() => Math.random() - 0.5));
-    }
-    return extra.slice(0, n);
-  }
-  return arr.slice(0, n);
+  return arr.slice(0, Math.min(n, arr.length));
 }
-// Функция случайного выбора из базы артефактов
+
 function detectArtifacts(){
   return[...ARTIFACT_DB].sort(()=>Math.random()-.5).slice(0,2+Math.floor(Math.random()*2))
     .map(a=>({label:a.label,sign:a.signs[Math.floor(Math.random()*a.signs.length)]}));
 }
-
-// --- Остальная логика игры (Music, startGame, nextQ и т.д.) ---
-// Обязательно оставь функции initAudio, toggleMusic, showMenu и т.д., которые были в твоем файле.
 
 const TIPS={
   100:["Идеальный результат! Попробуйте Medium — одна ошибка и конец.","Вы безупречно читаете артефакты ИИ."],
@@ -356,15 +291,13 @@ function loadH(){try{return JSON.parse(localStorage.getItem(HKEY)||"[]");}catch(
 function saveH(h){try{localStorage.setItem(HKEY,JSON.stringify(h));}catch(e){}}
 function addResult(e){const h=loadH();h.unshift(e);if(h.length>60)h.length=60;saveH(h);}
 function clearH(){localStorage.removeItem(HKEY);}
-function pickRandom(pool,n){return[...pool].sort(()=>Math.random()-.5).slice(0,Math.min(n,pool.length));}
 
 let questions=[],current=0,score=0,timeLeft=0,timer,roundLog=[];
 let cfgLevel="easy",cfgCat="random",cfgCount=2;
-let selectedImgIdx=null; // индекс выбранной картинки в текущем раунде
-let roundImages=[]; // картинки текущего раунда (главная + референсы)
+let selectedImgIdx=null;
+let roundImages=[];
 const TIMER_EASY=10,TIMER_MEDIUM=7;
 
-// AUDIO
 let ctx,gainNode,playing=false,oscArr=[];
 function initAudio(){if(ctx)return;ctx=new(window.AudioContext||window.webkitAudioContext)();gainNode=ctx.createGain();gainNode.gain.value=parseFloat(document.getElementById("vol").value);gainNode.connect(ctx.destination);}
 function setVol(v){if(gainNode)gainNode.gain.value=parseFloat(v);}
@@ -389,7 +322,6 @@ function stopMusic(){
 }
 function toggleMusic(){playing?stopMusic():startMusic();}
 
-// ── МЕНЮ ──
 function showMenu(){
   const h=loadH(),best=h.length?Math.max(...h.map(r=>r.pct)):null;
   document.getElementById("app").innerHTML=`
@@ -411,12 +343,10 @@ function showMenu(){
     </div>`;
 }
 
-// ── КАТЕГОРИЯ ──
 function showCat(){cfgCat="random";cfgCount=2;renderCat();}
 
 function renderCat(){
   const pool = getPool();
-  // Теперь считаем общее нужное количество: 10 вопросов * количество картинок в раунде
   const totalNeeded = 10 * cfgCount; 
   const enough = pool.length >= totalNeeded;
 
@@ -427,7 +357,6 @@ function renderCat(){
       <span class="cat-name">${v.label}</span>
     </button>`).join("");
 
-  // Текст на кнопках выбора количества
   const countInfo = {2: "Всего 20", 3: "Всего 30", 4: "Всего 40"};
   const countHtml = [2, 3, 4].map(n => `
     <button class="count-btn${cfgCount===n?' selected':''}" onclick="cfgCount=${n};renderCat()">
@@ -454,34 +383,26 @@ function renderCat(){
     <button class="btn-ghost" onclick="showMenu()">&gt; BACK</button>`;
 }
 
-// Функция перебора форматов картинки
 function tryNextFormat(img) {
-  // 1. Безопасно достаем массив с форматами из HTML
   const altsStr = img.getAttribute('data-alts');
   if (!altsStr) return;
   
   const altPaths = JSON.parse(altsStr);
   let currentIndex = parseInt(img.getAttribute('data-index') || "0");
-  currentIndex++; // Переходим к следующему формату в списке
+  currentIndex++;
   
   if (currentIndex < altPaths.length) {
-    // 2. Пробуем загрузить следующий формат (.png, .webp и т.д.)
     img.setAttribute('data-index', currentIndex);
     img.src = altPaths[currentIndex];
   } else {
-    // 3. Если перебрали ВСЕ форматы и файла нет на компьютере — ставим заглушку
-    img.onerror = null; // Отключаем проверку, чтобы не было бесконечного цикла
-    
-    // Это встроенная картинка в формате SVG. Ей не нужен интернет!
+    img.onerror = null;
     img.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' style='background:%23060f06;'%3E%3Ctext x='50%25' y='50%25' fill='%23007a1f' font-family='monospace' font-size='20' text-anchor='middle' dominant-baseline='middle'%3ENOT_FOUND%3C/text%3E%3C/svg%3E";
   }
 }
-// ── ИГРА ──
+
 function startGame(){
   const pool = getPool();
-  // Используем нашу новую функцию, чтобы выбрать 10 вопросов
   questions = pickRandom(pool, 10); 
-  
   current=0; score=0; roundLog=[];
   nextQ();
 }
@@ -489,12 +410,11 @@ function startGame(){
 function nextQ(){
   clearInterval(timer);
   timeLeft=cfgLevel==="easy"?TIMER_EASY:TIMER_MEDIUM;
-  selectedImgIdx=cfgCount===1?0:null; // если одна картинка — сразу выбрана
+  selectedImgIdx=cfgCount===1?0:null;
 
   const q=questions[current];
   const otherPool=getPool().filter(x=>x.image!==q.image);
   const refs=pickRandom(otherPool,cfgCount-1);
-  // перемешиваем все картинки раунда — главная прячется среди референсов
   roundImages=[{...q,isTarget:true},...refs.map(r=>({...r,isTarget:false}))].sort(()=>Math.random()-.5);
 
   renderQuiz();
@@ -509,20 +429,14 @@ function nextQ(){
 }
 
 function renderQuiz(){
-  const q = questions[current];
   const gridClass = `images-grid n${cfgCount}`;
-  
-// Генерируем ячейки (ИСПОЛЬЗУЕМ ОДИНАРНЫЕ КАВЫЧКИ для onerror='')
-  // Генерируем ячейки (используем безопасный data-alts)
   const cellsHtml = roundImages.map((item, idx) => `
     <div class="img-cell ${selectedImgIdx === idx ? 'selected' : ''}" id="imgcell_${idx}" onclick="selectImg(${idx})">
-      
       <img src="${item.image}" 
            data-index="0" 
            data-alts='${JSON.stringify(item.altPaths)}'
            onerror="tryNextFormat(this)" 
            loading="lazy" />
-      
       <div class="img-corner tl"></div><div class="img-corner tr"></div>
       <div class="img-corner bl"></div><div class="img-corner br"></div>
     </div>`).join("");
@@ -537,13 +451,10 @@ function renderQuiz(){
       <div class="timer-bar-wrap">
         <div class="timer-bar" id="tbar" style="width:100%"></div>
       </div>
-      
       <div class="${gridClass}">${cellsHtml}</div>
-      
       <div class="select-hint" id="selHint">
         ${selectedImgIdx !== null ? 'ВЕРДИКТ_ГОТОВ' : 'ВЫБЕРИТЕ_ОБЪЕКТ_ДЛЯ_АНАЛИЗА'}
       </div>
-      
       <div class="ans-btns">
         <button class="ans-btn btn-r" id="btnAi" onclick="answer('ai')" ${selectedImgIdx===null?'disabled':''}>[ AI ]</button>
         <button class="ans-btn btn-g" id="btnReal" onclick="answer('real')" ${selectedImgIdx===null?'disabled':''}>[ HUMAN ]</button>
@@ -552,15 +463,14 @@ function renderQuiz(){
       <div id="artPanel"></div>
     </div>`;
 }
+
 function selectImg(idx){
   if(selectedImgIdx!==null&&document.getElementById("fb")&&document.getElementById("fb").textContent) return;
   selectedImgIdx=idx;
-  // обновляем выделение ячеек
   roundImages.forEach((_,i)=>{
     const cell=document.getElementById("imgcell_"+i);
     if(cell){cell.classList.toggle("selected",i===idx);}
   });
-  // разблокируем кнопки и обновляем подсказку
   const btnAi=document.getElementById("btnAi"),btnReal=document.getElementById("btnReal");
   const hint=document.getElementById("selHint");
   if(btnAi){btnAi.disabled=false;}
@@ -575,13 +485,11 @@ function answer(user){
   const fb = document.getElementById("fb");
   const ap = document.getElementById("artPanel");
 
-  // Блокируем кнопки
   const btnAi = document.getElementById("btnAi");
   const btnReal = document.getElementById("btnReal");
   if(btnAi) btnAi.disabled = true;
   if(btnReal) btnReal.disabled = true;
 
-  // Формируем артефакты для логов
   const arts = targetItem.answer === "ai" ? detectArtifacts() : [];
   roundLog.push({q: targetItem, userAnswer: user, correct: correct, arts: arts});
 
@@ -611,7 +519,6 @@ function answer(user){
 
   current++;
   
-  // Проверяем правила игры и переходим к следующему шагу
   if (!correct && cfgLevel === "medium") {
     setTimeout(() => showGameOver(), 2500);
   } else {
