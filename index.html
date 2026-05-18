@@ -413,8 +413,14 @@ function nextQ(){
   selectedImgIdx=cfgCount===1?0:null;
 
   const q=questions[current];
-  const otherPool=getPool().filter(x=>x.image!==q.image);
+  
+  // УМНАЯ ФИЛЬТРАЦИЯ: Берем для сравнения только противоположные картинки!
+  // Если правильный ответ (q.answer) — это 'ai', то для фона берем только 'real'.
+  const otherPool=getPool().filter(x => x.image !== q.image && x.answer !== q.answer);
+  
   const refs=pickRandom(otherPool,cfgCount-1);
+  
+  // Перемешиваем цель и противоположные картинки, чтобы ИИ и Человек всегда были вместе
   roundImages=[{...q,isTarget:true},...refs.map(r=>({...r,isTarget:false}))].sort(()=>Math.random()-.5);
 
   renderQuiz();
